@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     
     @State private var usedWords = [String]()
@@ -16,6 +17,19 @@ struct ContentView: View {
     @State private var errorTitle = ""
     @State private var errorMessage = ""
     @State private var showingError = false
+    
+    var numGames : Int {
+        usedWords.count
+    }
+    
+    var countTotal : Int {
+        var total = 0
+        for curr in usedWords {
+            total += curr.count
+        }
+        
+        return total
+    }
     
     var body: some View {
         NavigationView {
@@ -29,6 +43,8 @@ struct ContentView: View {
                     ForEach(usedWords, id: \.self) { word in
                         HStack {
                             Image(systemName: "\(word.count).circle")
+                                .foregroundColor(
+                                    word.count >= 5 ? Color.blue : .primary)
                             Text(word)
                         }
                     }
@@ -36,7 +52,11 @@ struct ContentView: View {
 
             }
             .toolbar {
-                ToolbarItem(placement: .automatic) {
+                ToolbarItem(placement: .status) {
+                    Text("Games : \(numGames) / Count: \(countTotal)")
+                        .foregroundColor(Color.blue)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Reset", role: .destructive, action: startGame)
                 }
                 
@@ -80,7 +100,6 @@ struct ContentView: View {
             return
         }
         
-        //Extra validation to come
         withAnimation {
             usedWords.insert(answer, at: 0)
         }
